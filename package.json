@@ -4,7 +4,7 @@
   "main": "server.js",
   "repository": "https://github.com/KaushikRoy94/cb-emr-api-nodejs.git",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "dependencies": {
     "axios": "^1.6.8",
