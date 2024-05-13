@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Money Receipt</title>
+<style>
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  font-size: 14px;
+}
+
+.container {
+  width: 600px;
+  margin: 50px auto;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.header {
+  text-align: center;
+  position: relative;
+  padding-bottom: 10px;
+  margin-bottom: 0; /* No margin here to align title directly under the line */
+}
+
+.header img {
+  display: block;
+  margin: 0 auto;
+  width: 100px; /* Adjust the size accordingly */
+}
+
+.header-info {
+  margin-top: 10px;
+}
+
+.title {
+  border-top: 2px solid #000; /* Moving line above the title */
+  padding-top: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.body, .footer {
+  padding: 20px;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.info div {
+  width: 48%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+.totals {
+  width: 50%;
+  margin-left: auto;
+  border-collapse: collapse;
+}
+
+.totals td {
+  padding: 8px;
+  text-align: right;
+}
+
+.footer {
+  text-align: right;
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <img src="{{ logo }}" alt="Logo">
+    <div class="header-info">
+      <p>{{ address }}</p>
+      <p>Contact No: {{ contact }}</p>
+    </div>
+  </div>
+  <div class="title">
+    <h1>Tax Invoice cum Money Receipt</h1>
+  </div>
+  <div class="body">
+    <div class="info">
+      <div>
+        <strong>Patient Name:</strong> {{ patient_name }}<br>
+        <strong>Address:</strong> {{ patient_address }}<br>
+        <strong>Locality/City:</strong> {{ patient_city }}
+      </div>
+      <div>
+        <strong>Invoice Number:</strong> {{ invoice_number }}<br>
+        <strong>Date:</strong> {{ date }}<br>
+        <strong>Doctor's Name:</strong> {{ doctor_name }}
+      </div>
+    </div>
+    <table>
+      <tr><th>Medical Service Performed</th><th>Rate</th><th>Unit</th><th>Amount</th></tr>
+      <tr><td>{{ service }}</td><td>{{ rate }}</td><td>{{ unit }}</td><td>{{ amount }}</td></tr>
+    </table>
+    <!-- <h2>Payments</h2> -->
+    <!-- <table>
+      <tr><th>Payments</th><th>Receipt No</th><th>Mode</th><th>Amount</th></tr>
+      <tr><td>{{ payment_date }}</td><td>{{ receipt_number }}</td><td>{{ payment_mode }}</td><td>{{ payment_amount }}</td></tr>
+    </table> -->
+    <table class="totals">
+      <tr><td><strong>Discount:</strong></td><td>{{ discount }}</td></tr>
+      <tr><td><strong>Total:</strong></td><td>{{ total }}</td></tr>
+      <tr><td><strong>({{ payment_mode }}) </strong><strong>Total Paid:</strong></td><td>{{ total_paid }}</td></tr>
+    </table>
+  </div>
+  <div class="footer">
+    <p><strong>Authorised Signature</strong></p>
+  </div>
+</div>
+</body>
+</html>
