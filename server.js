@@ -57,3 +57,8 @@ app.post('/sendInvoice', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
+
+
+
+// Export the Express API
+module.exports = app
