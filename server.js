@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const {sendInvoice} = require('./dynamic_test');
 const PORT = 3000;
 
@@ -7,11 +8,6 @@ const PORT = 3000;
 // Instantiate Express.JS
 const app = express();
 
-// Enable G-ZIP Compression On Response
-app.use(compression());
-
-// Tell Express It Is Running Behind A Proxy
-app.set('trust proxy', true);
 
 // Enable CORS Middleware
 app.use(cors());
@@ -22,7 +18,6 @@ app.use(express.static('public'));
 // Enable Body Parser Middleware
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use(handleFileUpload);
 
 
 // Create A Default Route
