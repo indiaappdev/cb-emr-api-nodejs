@@ -49,7 +49,7 @@ app.post('/sendInvoice', async (req, res) => {
         }
     } catch (error) {
             // Log the error, assuming logger is set up for error reporting
-            logger.error("send email:: error - " + error.stack);
+            console.log("send email:: error - " + error.stack);
           }
 });
 
