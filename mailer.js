@@ -24,6 +24,7 @@ async function sendMail(mailOptions) {
             if (error) {
                 throw error
             }
+            console.log("info: ", info)
             return info
         });
     } catch (error) {
