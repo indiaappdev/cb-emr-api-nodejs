@@ -118,7 +118,8 @@ const sendInvoice = async (invoice_number, emailTo, subject, body) => {
             }
         ]                      // plain text body
     };
-    await sendMail(mailOptions)
+    resp = await sendMail(mailOptions)
+    return resp
 
   };
   

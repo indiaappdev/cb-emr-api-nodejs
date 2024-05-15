@@ -42,10 +42,11 @@ app.post('/sendInvoice', async (req, res) => {
 
         // Respond with a message including part of the request
         if (requestBody.invoice_number && requestBody.emailTo && requestBody.subject && requestBody.body) {
-            await sendInvoice(requestBody.invoice_number, requestBody.emailTo, requestBody.subject, requestBody.body)
-            res.status(200).send("message sent");
+            resp = await sendInvoice(requestBody.invoice_number, requestBody.emailTo, requestBody.subject, requestBody.body)
+            console.log("resp:: ",resp)
+            res.status(200).send({"status": 1, "message": "email sent to " + requestBody.emailTo});
         } else {
-            res.status(400).send('Missing information');
+            res.status(400).send({"status": 0, "message": 'Missing information'});
         }
     } catch (error) {
             // Log the error, assuming logger is set up for error reporting
