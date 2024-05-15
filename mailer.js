@@ -20,13 +20,8 @@ let transporter = nodemailer.createTransport(mailConfig);
 async function sendMail(mailOptions) {
     console.log(mailOptions)
     try {
-        await transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                throw error
-            }
-            console.log("info: ", info)
-            return info
-        });
+        resp = await transporter.sendMail(mailOptions)
+        return resp
     } catch (error) {
         console.error(`Failed to get invoice details: ${error.message}`);
         throw error
