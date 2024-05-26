@@ -100,26 +100,33 @@ const mergeVariables = async (text, variables) => {
 
 // Start processing
 const sendInvoice = async (invoice_number, emailTo, subject, body) => {
-    // Assuming the invoice number is known
-    emailFrom = "clinic@healthconnectpro.in"
-    data = await composeData(invoice_number);
+  try{
+      // Assuming the invoice number is known
+      emailFrom = "clinic@healthconnectpro.in"
+      data = await composeData(invoice_number);
+      console.log("sendInvoice:: data - ",data)
+      outputPath = await generatePDF("styled_invoice.html", {invoice_number, ...data});
 
-    outputPath = await generatePDF("styled_invoice.html", {invoice_number, ...data});
+      let mailOptions = {
+          from: emailFrom, // sender address
+          to: emailTo,                // list of receivers
+          subject: await mergeVariables(subject, data),                         // Subject line
+          text: await mergeVariables(body, data), 
+          attachments: [
+              {
+                  filename: path.basename(outputPath),
+                  content: fs.readFileSync(outputPath),
+              }
+          ]                      // plain text body
+      };
+      resp = await sendMail(mailOptions)
+      return resp
 
-    let mailOptions = {
-        from: emailFrom, // sender address
-        to: emailTo,                // list of receivers
-        subject: await mergeVariables(subject, data),                         // Subject line
-        text: await mergeVariables(body, data), 
-        attachments: [
-            {
-                filename: path.basename(outputPath),
-                content: fs.readFileSync(outputPath),
-            }
-        ]                      // plain text body
-    };
-    resp = await sendMail(mailOptions)
-    return resp
+    } catch (error) {
+          // Log the error, assuming logger is set up for error reporting
+          console.log("sendInvoice:: error - " + error.stack);
+          throw error
+        }
 
   };
   

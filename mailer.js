@@ -23,7 +23,7 @@ async function sendMail(mailOptions) {
         resp = await transporter.sendMail(mailOptions)
         return resp
     } catch (error) {
-        console.error(`Failed to get invoice details: ${error.message}`);
+        console.error(`sendMail::Failed to share invoice details: ${error.message}`);
         throw error
     }
 }
