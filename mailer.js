@@ -7,7 +7,7 @@ mailConfig = {
     secure: true,           // true for 465, false for other ports
     auth: {
         user: 'clinic@healthconnectpro.in', // your SMTP username
-        pass: '=[Vw~U#pSUIf'  // your SMTP password
+        pass: '6n*_fhVG;7G%'  // your SMTP password
     }
 }
 
