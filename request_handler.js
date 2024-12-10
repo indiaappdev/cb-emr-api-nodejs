@@ -1,178 +1,174 @@
+/**
+ * @fileoverview API integration module for handling clinic and invoice related data
+ * @module request_handler
+ */
+
 const axios = require('axios');
+// Base URLs for API endpoints
 const commonApiBaseUrl = "https://testemr-api-php.cb-dev.in/api/commonapi"
 const cliniApiBaseUrl = "https://testemr-api-php.cb-dev.in/api/clinicapi"
 
 
-
-// Define API call functions, each returning data or handling errors by returning default values
-async function get_clinic_details_by_invoiceNumber(invoiceNumber) {
+/**
+ * Makes an API call with error handling and response processing
+ * @param {string} url - The API endpoint URL
+ * @param {string} errorMessage - Custom error message for logging
+ * @returns {Promise<Object>} API response data or empty object on error
+ */
+async function makeApiCall(url, errorMessage) {
     try {
-        const response = await axios.get(`${cliniApiBaseUrl}/MoneyReceipt/get_clinic_details_by_invoiceNumber?invoiceNumber=${invoiceNumber}`);
-        // console.log(response.data)
-        if (response.data.status == '1') {
-            return response.data;
-        } else {
-            return {};
-        }
+        const response = await axios.get(url);
+        return response.data.status === '1' ? response.data : {};
     } catch (error) {
-        console.error(`Failed to fetch clinic details: ${error.message}`);
-        return {};  // Return an empty object in case of error
+        console.error(`${errorMessage}: ${error.message}`);
+        return {};
     }
 }
 
 
+/**
+ * Fetches clinic details using invoice number
+ * @param {string} invoiceNumber - Invoice number to fetch clinic details
+ * @returns {Promise<Object>} Clinic details or empty object
+ */
+async function get_clinic_details_by_invoiceNumber(invoiceNumber) {
+    return makeApiCall(
+        `${cliniApiBaseUrl}/MoneyReceipt/get_clinic_details_by_invoiceNumber?invoiceNumber=${invoiceNumber}`,
+        'Failed to fetch clinic details'
+    );
+}
 
-// Define API call functions, each returning data or handling errors by returning default values
+
+/**
+ * Fetches clinic logo using client ID and filename
+ * @param {string} clientId - Client identifier
+ * @param {string} fileName - Logo file name
+ * @returns {Promise<Object>} Logo data or empty object
+ */
 async function get_clinic_logo(clientId, fileName) {
-    try {
-        const response = await axios.get(`${commonApiBaseUrl}/File_reader/read_file_content_clinic?clinicid=${clientId}&file=${fileName}`);
-        // console.log(response.data)
-        if (response.data.status == '1') {
-            return response.data;
-        } else {
-            return {};
-        }
-    } catch (error) {
-        console.error(`Failed to fetch clinic logo: ${error.message}`);
-        return {};  // Return an empty object in case of error
-    }
+    return makeApiCall(
+        `${commonApiBaseUrl}/File_reader/read_file_content_clinic?clinicid=${clientId}&file=${fileName}`,
+        'Failed to fetch clinic logo'
+    );
 }
 
 /**
- * Retrieves the details of a patient by invoice number.
- *
- * @param {string} invoiceNumber - The invoice number to fetch patient details for.
- * @return {Promise<Object>} A promise that resolves to the patient details object if successful, or an empty object if unsuccessful.
+ * Fetches patient details using invoice number
+ * @param {string} invoiceNumber - Invoice number to fetch patient details
+ * @returns {Promise<Object>} Patient details or empty object
  */
 async function get_patient_details_by_invoiceNumber(invoiceNumber) {
-    try {
-        const response = await axios.get(`${cliniApiBaseUrl}/MoneyReceipt/get_patient_details_by_invoiceNumber?invoiceNumber=${invoiceNumber}`);
-        // console.log(response.data)
-        if (response.data.status == '1') {
-            return response.data;
-        } else {
-            return {};
-        }
-    } catch (error) {
-        console.error(`Failed to fetch patient details: ${error.message}`);
-        return {};
-    }
+    return makeApiCall(
+        `${cliniApiBaseUrl}/MoneyReceipt/get_patient_details_by_invoiceNumber?invoiceNumber=${invoiceNumber}`,
+        'Failed to fetch patient details'
+    );
 }
 
 /**
- * Retrieves the details of an invoice from the server.
- *
- * @param {string} invoiceNumber - The invoice number.
- * @return {Promise<Object>} A promise that resolves to the invoice details object if successful, or an empty object if unsuccessful.
+ * Fetches invoice details using invoice number
+ * @param {string} invoiceNumber - Invoice number to fetch invoice details
+ * @returns {Promise<Object>} Invoice details or empty object
  */
 async function view_invoice(invoiceNumber) {
-    try {
-        const response = await axios.get(`${cliniApiBaseUrl}/PatientInvoice/view_invoice?invoiceNumber=${invoiceNumber}`);
-        // console.log(response.data)
-        if (response.data.status == '1') {
-            return response.data;
-        } else {
-            return {};
-        }
-    } catch (error) {
-        console.error(`Failed to view invoice: ${error.message}`);
-        return {};
-    }
+    return makeApiCall(
+        `${cliniApiBaseUrl}/PatientInvoice/view_invoice?invoiceNumber=${invoiceNumber}`,
+        'Failed to view invoice'
+    );
 }
 
 /**
- * Retrieves the details of an invoice from the server.
- *
- * @param {string} invoiceNumber - The invoice number.
- * @return {Promise<Object>} A promise that resolves to the invoice details object if successful, or an empty object if unsuccessful.
+ * Fetches invoice details using invoice number
+ * @param {string} invoiceNumber - Invoice number to fetch invoice details
+ * @returns {Promise<Object>} Invoice details or empty object
  */
 async function get_invoice_details(invoiceNumber) {
-    try {
-        const response = await axios.get(`${cliniApiBaseUrl}/MoneyReceipt/get_invoice_details?invoiceNumber=${invoiceNumber}`);
-        // console.log(response.data)
-        if (response.data.status == '1') {
-            return response.data;
-        } else {
-            return {};
-        }
-    } catch (error) {
-        console.error(`Failed to get invoice details: ${error.message}`);
-        return {};
-    }
+    return makeApiCall(
+        `${cliniApiBaseUrl}/MoneyReceipt/get_invoice_details?invoiceNumber=${invoiceNumber}`,
+        'Failed to get invoice details'
+    );
 }
 
-
 /**
- * Asynchronously composes data for a given invoice number.
- *
- * @param {string} invoiceNumber - The invoice number to compose data for.
- * @return {Promise<Object>} A promise that resolves to an object containing the composed data.
- * The object contains the following properties:
- * - address: The address of the clinic, with available or default values.
- * - contact: The contact number of the clinic, with available or default values.
- * - logo: The base64-encoded logo of the clinic, with available or default values.
- * - patient_name: The name of the patient, with available or default values.
- * - patient_address: The address of the patient, with available or default values.
- * - patient_city: The city of the patient, with available or default values.
- * - doctor_name: The name of the doctor, with available or default values.
- * - date: The creation date of the invoice, with available or default values.
- * - service: The name of the service provided, with available or default values.
- * - rate: The rate of the service, with available or default values.
- * - unit: The unit of the service, with available or default values.
- * - amount: The total amount of the service, with available or default values.
- * - payment_mode: The payment mode used for the invoice, with available or default values.
- * - discount: The discount amount applied to the invoice, with available or default values.
- * - total: The total amount of the invoice, with available or default values.
- * - total_paid: The total amount paid for the invoice, with available or default values.
+ * Composes complete data object by fetching and combining data from multiple APIs
+ * @param {string} invoiceNumber - Invoice number to compose data for
+ * @returns {Promise<Object>} Combined data object containing all relevant information
+ * @property {string} address - Complete clinic address
+ * @property {string} contact - Clinic contact number
+ * @property {string} clinic_name - Name of the clinic
+ * @property {string} logo - Base64 encoded clinic logo
+ * @property {string} patient_name - Name of the patient
+ * @property {string} patient_address - Patient's address
+ * @property {string} patient_city - Patient's city
+ * @property {string} doctor_name - Name of the doctor
+ * @property {string} date - Invoice creation date
+ * @property {string} service - Service provided
+ * @property {string} rate - Service rate
+ * @property {string} unit - Service units
+ * @property {string} amount - Total amount
+ * @property {string} payment_mode - Mode of payment
+ * @property {string} discount - Discount amount
+ * @property {string} total - Total amount
+ * @property {string} total_paid - Amount paid
+ * @property {string} receipt_number - Receipt number
  */
 async function composeData(invoiceNumber) {
-    console.log("starting...")
-    const data = {};  // Initialize the data object
+    console.log("starting...");
+    const data = {};
 
-    // Get clinic details and fill in the data object with available or default values
+    // First fetch clinic details as logo depends on it
     const clinicDetails = await get_clinic_details_by_invoiceNumber(invoiceNumber);
-    data.address = `${clinicDetails.response?.address_line_1 || ''}, ${clinicDetails.response?.city || ''}, ${clinicDetails.response?.district || ''}, ${clinicDetails.response?.pincode || ''}, ${clinicDetails.response?.state || ''}`;
-    data.contact = clinicDetails.response?.phonenumber_1 || '';
-    data.clinic_name = clinicDetails.response?.name || '';
+    
+    // Fetch independent data in parallel for better performance
+    const [patientDetails, invoiceView, invoiceDetails] = await Promise.all([
+        get_patient_details_by_invoiceNumber(invoiceNumber),
+        view_invoice(invoiceNumber),
+        get_invoice_details(invoiceNumber)
+    ]);
 
-    // Get clinic logo
-    const logoFileName = clinicDetails.response?.logo || null;
-    if (logoFileName) {
-        const clientId = logoFileName.split("_")[0]
-        // console.log("logoFileName:: ",logoFileName)
-        // console.log("clientId:: ",clientId)
-        const clinicLogo = await get_clinic_logo(clientId, clinicDetails.response?.logo);
+    // Process clinic details and construct address
+    const { response: clinic } = clinicDetails;
+    data.address = [
+        clinic?.address_line_1,
+        clinic?.city,
+        clinic?.district,
+        clinic?.pincode,
+        clinic?.state
+    ].filter(Boolean).join(', ');
+    
+    data.contact = clinic?.phonenumber_1 || '';
+    data.clinic_name = clinic?.name || '';
+
+    // Fetch and process clinic logo if available
+    if (clinic?.logo) {
+        const clientId = clinic.logo.split("_")[0];
+        const clinicLogo = await get_clinic_logo(clientId, clinic.logo);
         data.logo = clinicLogo?.base64String || '';
     }
-    // Get patient details
-    const patientDetails = await get_patient_details_by_invoiceNumber(invoiceNumber);
-    data.patient_name = patientDetails.response?.name || '';
-    data.patient_address = patientDetails.response?.address_line_1 || '';
-    data.patient_city = patientDetails.response?.locality || '';
-    data.doctor_name = patientDetails.response?.doctors_name || '';
 
-    // View invoice details
-    const invoiceView = await view_invoice(invoiceNumber);
-    data.date = invoiceView.response?.[0]?.create_datetime || '';
-    data.service = invoiceView.response?.[0]?.fee_name || '';
-    data.rate = invoiceView.response?.[0]?.fee_amount || '';
-    data.unit = invoiceView.response?.[0]?.unit || '';
-    data.amount = invoiceView.response?.[0]?.fee_total || '';
+    // Process patient details
+    const { response: patient } = patientDetails;
+    data.patient_name = patient?.name || '';
+    data.patient_address = patient?.address_line_1 || '';
+    data.patient_city = patient?.locality || '';
+    data.doctor_name = patient?.doctors_name || '';
 
-    // Get further invoice details
-    const invoiceDetails = await get_invoice_details(invoiceNumber);
-    data.payment_mode = invoiceDetails.response?.payment_method || '';
-    data.discount = invoiceDetails.response?.discount_amount || '';
-    data.total = invoiceDetails.response?.total_amount || '';
-    data.total_paid = invoiceDetails.response?.paid_amount || '';
-    data.receipt_number = invoiceDetails.response?.receipt_no || '';
+    // Process invoice view
+    const invoiceData = invoiceView.response?.[0] || {};
+    data.date = invoiceData.create_datetime || '';
+    data.service = invoiceData.fee_name || '';
+    data.rate = invoiceData.fee_amount || '';
+    data.unit = invoiceData.unit || '';
+    data.amount = invoiceData.fee_total || '';
 
-    // console.log(data);
+    // Process detailed invoice information
+    const { response: invoice } = invoiceDetails;
+    data.payment_mode = invoice?.payment_method || '';
+    data.discount = invoice?.discount_amount || '';
+    data.total = invoice?.total_amount || '';
+    data.total_paid = invoice?.paid_amount || '';
+    data.receipt_number = invoice?.receipt_no || '';
+
     return data;
 }
 
-// export default composeData
-// Export Modules
-module.exports = {
-    composeData
-  };
+module.exports = { composeData };
