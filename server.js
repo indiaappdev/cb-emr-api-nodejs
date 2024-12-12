@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const {sendInvoice} = require('./dynamic_test');
+const sendPrescription= require("./ePrescription/sendPrescription");
 const PORT = 3000;
 
 
@@ -136,6 +137,40 @@ app.post('/sendInvoice', async (req, res) => {
         });
     }
 });
+
+app.post("/sendPrescription", async (req, res) => {
+
+    const requestBody = req.body;
+
+    // Log the request body to the console
+    // console.log(requestBody);
+
+
+    // Respond with a message including part of the request
+    if (
+        requestBody.cons_id &&
+        requestBody.pres_id &&
+        requestBody.user_role &&
+        requestBody.emailTo &&
+        requestBody.clinic_id &&
+        requestBody.subject &&
+        requestBody.body
+    ){
+      console.log(sendPrescription);
+      
+        const data=await sendPrescription(requestBody)
+        console.log(data);
+
+        if(data){
+          res.status(200).send({
+            status: 1,
+            message: "Prescription sent successfully",
+            resp: data,
+          });
+        }
+        
+    }
+})
 
 
     
