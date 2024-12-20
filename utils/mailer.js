@@ -1,19 +1,10 @@
 const nodemailer = require('nodemailer');
+const { config } = require('./config');
 
-mailConfig = {
-    // host: 'pinnacle.herosite.pro', // SMTP Host
-    host: 'mail.healthconnectpro.in', // SMTP Host
-    port: 465,   // SMTP Port
-    secure: true,           // true for 465, false for other ports
-    auth: {
-        user: 'clinic@healthconnectpro.in', // your SMTP username
-        pass: '6n*_fhVG;7G%'  // your SMTP password
-    }
-}
 
 // Create a SMTP transporter object
 let transporter = nodemailer.createTransport({
-    ...mailConfig,
+    ...config.mailConfig,
     pool: true, // Use connection pooling
     maxConnections: 5, // Limit the number of connections
     maxMessages: 100, // Limit the number of messages per connection

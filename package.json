@@ -1,10 +1,10 @@
 {
   "name": "cb-emr-backend",
   "version": "1.0.0",
-  "main": "server.js",
-  "repository": "https://github.com/KaushikRoy94/cb-emr-api-nodejs.git",
+  "main": "app.js",
+  "repository": "",
   "scripts": {
-    "start": "node server.js",
+    "start": "node app.js",
     "postinstall": "npx puppeteer browsers install chrome"
   },
   "dependencies": {

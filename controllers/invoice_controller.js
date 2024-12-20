@@ -18,8 +18,9 @@
 const fs = require('fs');
 const path = require("path");
 const puppeteer = require('puppeteer');
-const {composeData} = require('./request_handler');
-const {sendMail} = require('./mailer');
+const {composeData} = require('../utils/request_handler');
+const {sendMail} = require('../utils/mailer');
+const { config } = require('../utils/config');
 
 /**
  * Asynchronously generates a PDF from the provided HTML template file with dynamic data.
@@ -28,7 +29,11 @@ const {sendMail} = require('./mailer');
  * @returns {Promise<string>} Path to generated PDF
  */
 async function generatePDF(htmlPath, data) {
-  const outputPath = "invoice.pdf";
+  const invoiceDirPath = path.join(__dirname, '..', config.invoiceFileDir);
+  if (!fs.existsSync(invoiceDirPath)) {
+    fs.mkdirSync(invoiceDirPath, { recursive: true });
+  }
+  const outputPath = path.join(invoiceDirPath, config.invoiceFileName);
   try {
       // Read template file asynchronously
       const htmlTemplate = fs.readFileSync(htmlPath, 'utf8');
@@ -126,12 +131,12 @@ const mergeVariables = async (text, variables) => {
  * @returns {Promise<Object>} Email send response
  */
 const sendInvoice = async (invoice_number, emailTo, subject, body) => {
-  const emailFrom = "clinic@healthconnectpro.in";
   let outputPath;
   try {
       // Get data and generate PDF concurrently
+      const templateFilePath = path.join(__dirname, '..', config.templateFileDir, config.templateFileName);
       const data = await composeData(invoice_number);
-      outputPath = await generatePDF("styled_invoice.html", {
+      outputPath = await generatePDF(templateFilePath, {
           invoice_number, 
           ...data
       });
@@ -143,7 +148,7 @@ const sendInvoice = async (invoice_number, emailTo, subject, body) => {
       ]);
 
       const mailOptions = {
-          from: emailFrom,
+          from: config.emailFrom,
           to: emailTo,
           subject: mergedSubject,
           text: mergedBody,
