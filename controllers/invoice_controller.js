@@ -18,9 +18,85 @@
 const fs = require('fs');
 const path = require("path");
 const puppeteer = require('puppeteer');
-const {composeData} = require('../utils/request_handler');
+const { get_details_by_invoiceNumber, get_clinic_logo } = require('../utils/request_handler');
 const {sendMail} = require('../utils/mailer');
 const { config } = require('../utils/config');
+
+/**
+ * Composes complete data object by fetching and combining data from multiple APIs
+ * @param {string} invoiceNumber - Invoice number to compose data for
+ * @returns {Promise<Object>} Combined data object containing all relevant information
+ * @property {string} address - Complete clinic address
+ * @property {string} contact - Clinic contact number
+ * @property {string} clinic_name - Name of the clinic
+ * @property {string} logo - Base64 encoded clinic logo
+ * @property {string} patient_name - Name of the patient
+ * @property {string} patient_address - Patient's address
+ * @property {string} patient_city - Patient's city
+ * @property {string} doctor_name - Name of the doctor
+ * @property {string} date - Invoice creation date
+ * @property {string} service - Service provided
+ * @property {string} rate - Service rate
+ * @property {string} unit - Service units
+ * @property {string} amount - Total amount
+ * @property {string} payment_mode - Mode of payment
+ * @property {string} discount - Discount amount
+ * @property {string} total - Total amount
+ * @property {string} total_paid - Amount paid
+ * @property {string} receipt_number - Receipt number
+ */
+async function composeData(invoiceNumber) {
+    console.log("starting...");
+    const data = {};
+
+    // First fetch details as logo depends on it
+    const details = await get_details_by_invoiceNumber(invoiceNumber);
+    if (Object.keys(details).length > 0){
+        const clinicDetails = details.data.clinicDetails
+        const patientDetails = details.data.patientDetails
+        const invoiceDetails = details.data.invoiceDetails
+        
+        // Process client details
+        data.address = [
+            clinicDetails?.address_line_1,
+            clinicDetails?.city,
+            clinicDetails?.district,
+            clinicDetails?.pincode,
+            clinicDetails?.state
+        ].filter(Boolean).join(', ');
+        data.contact = clinicDetails?.phonenumber_1 || '';
+        data.clinic_name = clinicDetails?.name || '';
+
+        // Fetch and process clinic logo if available
+        if (clinicDetails?.logo) {
+            const clientId = clinicDetails.clinic_id;
+            const clinicLogo = await get_clinic_logo(clientId, clinicDetails.logo);
+            data.logo = clinicLogo?.base64String || '';
+        }
+
+        // Process patient details
+        data.patient_name = patientDetails?.patient_name || '';
+        data.patient_address = patientDetails?.patient_address || '';
+        data.patient_city = patientDetails?.patient_locality || '';
+        data.doctor_name = patientDetails?.doctors_name || '';
+
+        // Process invoice view
+        data.date = invoiceDetails.invoice_create_datetime || '';
+        data.service = invoiceDetails.fee_name || '';
+        data.rate = invoiceDetails.fee_amount || '';
+        data.unit = invoiceDetails.unit || '';
+        data.amount = invoiceDetails.fee_total || '';
+
+        // Process detailed invoice information
+        data.payment_mode = invoiceDetails?.payment_method || '';
+        data.discount = invoiceDetails?.discount_amount || '';
+        data.total = invoiceDetails?.total_amount || '';
+        data.total_paid = invoiceDetails?.paid_amount || '';
+        data.receipt_number = invoiceDetails?.receipt_no || '';
+    }
+    return data;
+}
+
 
 /**
  * Asynchronously generates a PDF from the provided HTML template file with dynamic data.
@@ -136,29 +212,34 @@ const sendInvoice = async (invoice_number, emailTo, subject, body) => {
       // Get data and generate PDF concurrently
       const templateFilePath = path.join(__dirname, '..', config.templateFileDir, config.templateFileName);
       const data = await composeData(invoice_number);
-      outputPath = await generatePDF(templateFilePath, {
-          invoice_number, 
-          ...data
-      });
+    if (Object.keys(data).length > 0){
 
-      // Process email content concurrently
-      const [mergedSubject, mergedBody] = await Promise.all([
-          mergeVariables(subject, data),
-          mergeVariables(body, data)
-      ]);
+        outputPath = await generatePDF(templateFilePath, {
+            invoice_number, 
+            ...data
+        });
 
-      const mailOptions = {
-          from: config.emailFrom,
-          to: emailTo,
-          subject: mergedSubject,
-          text: mergedBody,
-          attachments: [{
-              filename: path.basename(outputPath),
-              content: fs.readFileSync(outputPath)
-          }]
-      };
+        // Process email content concurrently
+        const [mergedSubject, mergedBody] = await Promise.all([
+            mergeVariables(subject, data),
+            mergeVariables(body, data)
+        ]);
 
-      return await sendMail(mailOptions);
+        const mailOptions = {
+            from: config.emailFrom,
+            to: emailTo,
+            subject: mergedSubject,
+            text: mergedBody,
+            attachments: [{
+                filename: path.basename(outputPath),
+                content: fs.readFileSync(outputPath)
+            }]
+        };
+
+        return await sendMail(mailOptions);
+    } else {
+        throw new Error("COULDN'T FETCH INVOICE DETAILS")
+    }
   } catch (error) {
       console.error("Invoice sending failed:", error.stack);
       throw error;

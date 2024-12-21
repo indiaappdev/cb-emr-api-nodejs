@@ -1,71 +1,18 @@
-const {sendInvoice} = require('../controllers/invoice_controller');
-
 // Import Required Packages
+const {sendInvoice} = require('../controllers/invoice_controller');
+const validationMiddleware = require('../middlewares/validation_middleware')
+const { invoiceValidationSchema } = require('../schemas/invoice_schemas')
 const express = require('express');
 const router = express.Router();
-    
-/**
- * Schema for request validation
- */
-const invoiceRequestSchema = {
-    invoice_number: { type: 'string', required: true },
-    emailTo: { type: 'string', required: true, format: 'email' },
-    subject: { type: 'string', required: true },
-    body: { type: 'string', required: true }
-};
 
-/**
- * Validates email format
- * @param {string} email
- * @returns {boolean}
- */
-const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-};
-
-/**
- * Validates request body against schema
- * @param {Object} body
- * @returns {Object} { isValid, errors }
- */
-const validateRequest = (body) => {
-    const errors = [];
     
-    for (const [field, rules] of Object.entries(invoiceRequestSchema)) {
-        if (rules.required && !body[field]) {
-            errors.push(`${field} is required`);
-            continue;
-        }
-        
-        if (rules.format === 'email' && !isValidEmail(body[field])) {
-            errors.push(`${field} must be a valid email`);
-        }
-    }
-    
-    return {
-        isValid: errors.length === 0,
-        errors
-    };
-};
-
 /**
  * Route handler for sending invoices
  */
-router.post('/sendInvoice', async (req, res) => {
+router.post('/sendInvoice', invoiceValidationSchema, validationMiddleware, async (req, res) => {
     const startTime = Date.now(); // For request timing
 
     try {
-        // Request validation
-        const { isValid, errors } = validateRequest(req.body);
-        if (!isValid) {
-            return res.status(400).json({
-                status: 0,
-                message: 'Validation failed',
-                errors
-            });
-        }
-
         const { invoice_number, emailTo, subject, body } = req.body;
 
         // Log request with sanitized data
