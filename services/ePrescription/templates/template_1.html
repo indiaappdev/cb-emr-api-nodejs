@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Live Reload</title>
+    <style>
+      body {
+        margin: 12px;
+        padding: 20px;
+      }
+      .header {
+        text-align: center;
+        background-color: #1A364C;
+        width: 100%;
+      }
+      .header h1 {
+        font-size: 18px;
+        color: white;
+      }
+      .content {
+        padding: 16px;
+      }
+      .header-section {
+        margin-top: 16px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+      .header-section div {
+        font-weight: 500;
+      }
+      .header-section img {
+        width: 170px;
+        height: auto;
+        overflow: hidden;
+      }
+      .patient-details {
+        margin-top: 32px;
+        font-weight: 500;
+        font-size: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .patient-details .row {
+        display: flex;
+        flex-direction: row;
+        gap: 12px;
+      }
+      .medicine-table {
+        margin-top: 24px;
+        overflow-x: auto;
+      }
+      .medicine-table table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #D1D5DB;
+      }
+      .medicine-table th, 
+      .medicine-table td {
+        padding: 8px 16px;
+        border: 1px solid #D1D5DB;
+        font-size: 14px;
+      }
+      .medicine-table th {
+        background-color: #DBEAFE;
+        text-align: left;
+        font-weight: 500;
+      }
+      .advice-section {
+        margin-top: 16px;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .advice-row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+      .advice-row div {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>e-prescription</h1>
+    </div>
+    <div class="content">
+      <!-- Header Section -->
+      <div class="header-section">
+        <div>
+          <p style="font-size: 20px; font-weight: 500;">{{doctors_name}}</p>
+          <p>Reg No: {{licence_number}}</p>
+          <p>{{degree}}</p>
+          <p>Specialist: {{specialization}}</p>
+        </div>
+        <div>
+          <img src={{clinicImg}} alt="Clinic Logo">
+        </div>
+        <div>
+          <p style="font-size: 20px;">{{clinic_name}}</p>
+          <p>{{address_line_1}}</p>
+          <p>Mobile: {{phonenumber_1}}/{{phonenumber_2}}</p>
+          <p>{{timings}}</p>
+        </div>
+      </div>
+
+      <!-- Patient Details Section -->
+      <div class="patient-details">
+        <p>Name: <span style="font-size: 16px;">{{name}} ({{gender}} {{age}})</span></p>
+        <div class="row">
+          <p>Height(ft): {{height}}</p>
+          <p>Weight(kg): {{weight}}</p>
+          <p>Pulse Rate(bpm): {{pulse_rate}}</p>
+          <p>Bp(mm/Hg): {{blood_pressure_mm}}/{{blood_pressure_hg}} Random</p>
+          <p>Sugar:{{blood_sugar_random}}</p>
+        </div>
+        <p>Complaints: <span style="font-size: 16px;">{{chief_complaints}}</span></p>
+        <p>Findings: <span style="font-size: 16px;">{{doctor_findings}}</span></p>
+        <p>Notes: <span style="font-size: 16px;">{{doctor_investigation}}</span></p>
+      </div>
+
+      <!-- Medicine Details Table -->
+      <div class="medicine-table">
+        <table>
+          <!-- Table Header -->
+          <thead>
+            <tr>
+              <th>Medicine Name</th>
+              <th>Dose</th>
+              <th>When / How</th>
+              <th>Frequency</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <!-- Table Body -->
+          <tbody>
+            {{#each medicine}}
+            <tr>
+              <td>{{this.name}}</td>
+              <td>{{this.dose}}</td>
+              <td>{{this.when}}</td>
+              <td>{{this.frequency}}</td>
+              <td>{{this.duration}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Advice Section -->
+      <div class="advice-section">
+        <div>
+          <p>Diagonstic/Lab Tests Prescribed:</p>
+          <p style="font-size: 14px; font-weight: 400;">nothing</p>
+        </div>
+        <div class="advice-row">
+          <div>
+            <p>Advice (Do's):</p>
+            <p style="font-size: 14px;">{{advice_does}}</p>
+          </div>
+          <div>
+            <p>Advice (Dont's):</p>
+            <p style="font-size: 14px;">{{advice_donts}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      socket.on("reload", () => {
+        console.log("Reloading...");
+        window.location.reload();
+      });
+    </script>
+  </body>
+</html>
