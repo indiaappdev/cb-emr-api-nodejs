@@ -1,5 +1,5 @@
 // Import Required Packages
-const {sendPrescription} = require('../services/ePrescription/sendPrescription');
+const {sendPrescription} = require('../controllers/prescription_controller');
 const express = require('express');
 const router = express.Router();
 

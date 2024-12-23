@@ -2,24 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Money Receipt</title>
 <style>
 body {
   font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
+  margin: 12px;
+  padding: 20px;
   background-color: #f9f9f9;
   font-size: 14px;
 }
-
 .container {
-  width: 600px;
-  margin: 50px auto;
-  background-color: #fff;
-  padding: 20px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
 }
 
+.content {
+    flex: 1; /* Allow the content to grow and take available space */
+}
 .header {
   text-align: center;
   position: relative;
@@ -72,6 +74,7 @@ th, td {
 }
 
 th {
+  /* background-color: #DBEAFE; */
   background-color: #f0f0f0;
 }
 
@@ -116,21 +119,45 @@ th {
         <strong>Date:</strong> {{ date }}<br>
         <strong>Doctor's Name:</strong> {{ doctor_name }}
       </div>
-    </div>
-    <table>
-      <tr><th>Medical Service Performed</th><th>Rate</th><th>Unit</th><th>Amount</th></tr>
-      <tr><td>{{ service }}</td><td>{{ rate }}</td><td>{{ unit }}</td><td>{{ amount }}</td></tr>
-    </table>
-    <!-- <h2>Payments</h2> -->
-    <!-- <table>
-      <tr><th>Payments</th><th>Receipt No</th><th>Mode</th><th>Amount</th></tr>
-      <tr><td>{{ payment_date }}</td><td>{{ receipt_number }}</td><td>{{ payment_mode }}</td><td>{{ payment_amount }}</td></tr>
-    </table> -->
-    <table class="totals">
+    </div>    
+      <!-- Medical Service Details Table -->
+      <div>
+        <table>
+          <!-- Table Header -->
+          <thead>
+            <tr>
+              <th>Medical Service Performed</th>
+              <th>Rate</th>
+              <th>Unit</th>
+              <th>Amount</th>
+              <th>Discount</th>
+              <th>Total</th>
+              <th>Total Paid</th>
+              <th>Payment Mode</th>
+            </tr>
+          </thead>
+          <!-- Table Body -->
+          <tbody>
+            {{#each services}}
+            <tr>
+              <td>{{this.service}}</td>
+              <td>{{this.rate}}</td>
+              <td>{{this.unit}}</td>
+              <td>{{this.amount}}</td>
+              <td>{{this.discount}}</td>
+              <td>{{this.total}}</td>
+              <td>{{this.total_paid}}</td>
+              <td>{{this.payment_mode}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    <!-- <table class="totals">
       <tr><td><strong>Discount:</strong></td><td>{{ discount }}</td></tr>
       <tr><td><strong>Total:</strong></td><td>{{ total }}</td></tr>
       <tr><td><strong>({{ payment_mode }}) </strong><strong>Total Paid:</strong></td><td>{{ total_paid }}</td></tr>
-    </table>
+    </table> -->
   </div>
   <div class="footer">
     <p><strong>Authorised Signature</strong></p>

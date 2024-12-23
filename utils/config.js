@@ -26,10 +26,12 @@ const config = {
     cliniApiBaseUrl: "https://testemr-api-php.cb-dev.in/api/clinicapi",
 
     // extra configs
-    templateFileDir: "static",
-    templateFileName: "styled_invoice.html",
-    invoiceFileDir: "uploads",
-    invoiceFileName: "invoice.pdf"
+    templateFileDir: "templates",
+    invoiceTemplateFileName: "invoice_template_1.html",
+    prescriptionTemplateFileName: "prescription_template_1.html",
+    fileDir: "uploads",
+    invoiceFileName: "invoice.pdf",
+    prescriptionFileName: "prescription.pdf"
 };
 
 module.exports = {
