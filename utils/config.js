@@ -4,10 +4,6 @@ const config = {
     port: 3000,
     environment: 'development',
     
-    // File Paths
-    uploadsPath: './uploads',
-    logsPath: './logs',
-    
     // Mail Configuration 
     mailConfig: {
         // host: 'pinnacle.herosite.pro', // SMTP Host
