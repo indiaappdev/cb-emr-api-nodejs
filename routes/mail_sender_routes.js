@@ -87,9 +87,9 @@ router.post("/sendPrescription", prescriptionValidationSchema, validationMiddlew
   
         // Log request with sanitized data
         console.log('Processing Prescription request:', {
-            pres_id,
-            emailTo: emailTo.replace(/(?<=.{3}).(?=.*@)/g, '*'), // Mask email
-            timestamp: new Date().toISOString()
+          pres_id: requestBody.pres_id,
+          emailTo: requestBody.emailTo.replace(/(?<=.{3}).(?=.*@)/g, '*'), // Mask email
+          timestamp: new Date().toISOString()
         });
   
         // Send prescription
@@ -101,7 +101,7 @@ router.post("/sendPrescription", prescriptionValidationSchema, validationMiddlew
         // Success response
         return res.status(200).json({
             status: 1,
-            message: `Prescription Email sent successfully to ${emailTo}`,
+            message: `Prescription Email sent successfully to ${requestBody.emailTo}`,
             resp: response,
             metadata: {
                 requestDuration: `${duration}ms`,

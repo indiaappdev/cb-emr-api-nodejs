@@ -6,6 +6,7 @@
 const fs = require("fs");
 const path = require("path");
 const { sendMail } = require("../utils/mailer")
+const { generatePDF } = require("../utils/common_helper")
 const { config } = require("../utils/config")
 const { get_consultation_details_temp, get_doctor_details_temp, get_own_clinic_details_temp, get_clinic_logo } = require("../utils/request_handler")
 
@@ -46,7 +47,7 @@ const prepareData = async (id, pres_id, user_role = "dc", clinic_id) => {
 
                 // Fetch and process clinic logo if available
                 if (clinic_data?.response?.logo) {
-                    const clinicLogo = await get_clinic_logo(clinic_id, clinicDetails.logo);
+                    const clinicLogo = await get_clinic_logo(clinic_id, clinic_data.response.logo);
                     data.response.clinicImg = clinicLogo?.base64String || '';
                 }
                 return data.response;
