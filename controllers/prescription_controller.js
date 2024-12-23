@@ -130,4 +130,6 @@ const sendPrescription = async (
     }
 };
 
-module.exports = sendPrescription
+module.exports = {
+    sendPrescription
+};
