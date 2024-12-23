@@ -1,14 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const { config } = require('./utils/config')
-const { mountRoutes } = require('./routes')
-const PORT = 3000;
-
+const mailSenderRoutes = require('./routes/mail_sender_routes')
 
 
 // Instantiate Express.JS
 const app = express();
-
 
 // Enable CORS Middleware
 app.use(cors());
@@ -27,12 +24,13 @@ app.get('/home', (request, response) => {
     });
 
 
-// Initialize Routes
-mountRoutes(app);
+// Use the invoice routes
+app.use('/', mailSenderRoutes); // Mount the router
+
     
 // Start the server
-app.listen(PORT, () => {
-    console.log(`Server running on http://0.0.0.0:${PORT}`);
+app.listen(config.port, () => {
+    console.log(`Server running on http://0.0.0.0:${config.port}`);
 });
 
 
