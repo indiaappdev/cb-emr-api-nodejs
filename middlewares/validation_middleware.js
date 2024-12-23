@@ -15,9 +15,9 @@ const validationMiddleware = (request, response, next) => {
     errors
       .array()
       .map((err) =>
-        extractedErrors.push({ 
-            fieldName: err.path,
-            fieldError: err.msg,
+        extractedErrors.push({
+          fieldName: err.path,
+          fieldError: err.msg,
         })
       );
     const groupedErrors = {};

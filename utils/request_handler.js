@@ -24,7 +24,7 @@ async function makeApiCall(url, errorMessage) {
                 },
             }
         );
-        return response.data.status === 1 ? response.data : {status: response.data.status, message: response.data.message || ''};
+        return response.data.status === 1 ? response.data : { status: response.data.status, message: response.data.message || '' };
     } catch (error) {
         console.error(`${errorMessage}: ${error.message}`);
         return {};
@@ -36,7 +36,7 @@ async function makeApiCall(url, errorMessage) {
  * @param {string} invoiceNumber - Invoice number to fetch all details
  * @returns {Promise<Object>} All details or empty object
  */
-async function get_details_by_invoiceNumber(invoiceNumber, user_role="dc") {
+async function get_details_by_invoiceNumber(invoiceNumber, user_role = "dc") {
     return makeApiCall(
         `${config.cliniApiBaseUrl}/MoneyReceipt/get_details_by_invoiceNumber?invoiceNumber=${invoiceNumber}&user_role=${user_role}`,
         'Failed to fetch details'

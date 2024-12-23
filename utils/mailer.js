@@ -42,4 +42,4 @@ async function sendMail(mailOptions) {
 // Export Modules
 module.exports = {
     sendMail
-  };
+};

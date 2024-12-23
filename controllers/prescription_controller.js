@@ -85,21 +85,16 @@ const prepareData = async (id, pres_id, user_role = "dc", clinic_id) => {
  * 
  * @returns {Promise} Promise that resolves to the result of the email sending operation.
  */
-const sendPrescription = async (
-    requestBody
-) => {
-    // console.log(requestBody);
-
-    const { cons_id,
-        pres_id,
-        user_role,
-        clinic_id,
-        emailTo,
-        subject,
-        body } = requestBody;
-    // console.log("called send");
-
+const sendPrescription = async (requestBody) => {
+    let outputPath;
     try {
+        const { cons_id,
+            pres_id,
+            user_role,
+            clinic_id,
+            emailTo,
+            subject,
+            body } = requestBody;
         // Get data and generate PDF concurrently
         const templateFilePath = path.join(__dirname, '..', config.templateFileDir, config.prescriptionTemplateFileName);
         const data = await prepareData(cons_id, pres_id, user_role, clinic_id);
@@ -107,15 +102,15 @@ const sendPrescription = async (
         if (!fs.existsSync(prescriptionDirPath)) {
             fs.mkdirSync(prescriptionDirPath, { recursive: true });
         }
-        const outputPath = path.join(prescriptionDirPath, config.prescriptionFileName);
+        outputPath = path.join(prescriptionDirPath, config.prescriptionFileName);
         // Parse the `medicine` field
         data.medicine = JSON.parse(data.medicine);
         await generatePDF(templateFilePath, data, outputPath);
-        
+
         const mailOptions = {
             from: config.emailFrom,
             to: emailTo,
-            subject: subject || "ePrescription", // Subject line
+            subject: subject,
             text: body,
             attachments: [{
                 filename: path.basename(outputPath),
@@ -128,6 +123,15 @@ const sendPrescription = async (
         // Log the error, assuming logger is set up for error reporting
         console.log("sendPrescription:: error - " + error.stack);
         throw error;
+    } finally {
+        // Cleanup generated PDF using synchronous deletion
+        if (outputPath && fs.existsSync(outputPath)) {
+            try {
+                fs.unlinkSync(outputPath);
+            } catch (err) {
+                console.warn("PDF cleanup failed:", err);
+            }
+        }
     }
 };
 

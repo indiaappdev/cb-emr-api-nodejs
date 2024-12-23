@@ -102,15 +102,15 @@ async function composeData(invoiceNumber) {
         // Process invoice view
         data.date = invoiceDetails.invoice_create_datetime || '';
         if (Array.isArray(invoiceDetails) && invoiceDetails.length > 0) {
-            data.services = invoiceDetails.map(({ 
-                fee_name = '', 
-                fee_amount = '', 
-                unit = '', 
-                fee_total = '', 
+            data.services = invoiceDetails.map(({
+                fee_name = '',
+                fee_amount = '',
+                unit = '',
+                fee_total = '',
                 discount_amount = '',
                 total_amount = '',
                 paid_amount = '',
-                payment_method = '' 
+                payment_method = ''
             }) => {
                 return {
                     service: fee_name,
