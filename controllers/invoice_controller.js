@@ -154,7 +154,7 @@ const sendInvoice = async (invoice_number, emailTo, subject, body) => {
         if (!fs.existsSync(invoiceDirPath)) {
             fs.mkdirSync(invoiceDirPath, { recursive: true });
         }
-        const outputPath = path.join(invoiceDirPath, config.invoiceFileName);
+        outputPath = path.join(invoiceDirPath, config.invoiceFileName);
         await generatePDF(templateFilePath, {
             invoice_number,
             ...data
