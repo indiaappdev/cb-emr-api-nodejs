@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 12px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            font-size: 14px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            background: #fff;
+            border-radius: 8px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            display: block;
+            margin: 0 auto;
+            width: 100px;
+        }
+        .header-info {
+            margin-top: 10px;
+        }
+        .title {
+            border-top: 2px solid #000;
+            padding-top: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .details, .payments {
+            margin-bottom: 20px;
+        }
+        .details table, .payments table {
+            width: 100%;
+            border-collapse: collapse; /* Ensures no double borders */
+            border-radius: 8px; /* Rounds the corners of the entire table */
+            overflow: hidden; /* Ensures the rounded corners are clean */
+        }
+        .details th, .payments th {
+            background: #e0e0e0;
+            padding: 10px;
+            text-align: left;
+        }
+        .details td, .payments td {
+            padding: 10px;
+        }
+        .details tr:not(:last-child) td,
+        .payments tr:not(:last-child) td {
+            border-bottom: 1px solid #ddd; /* Horizontal row dividers */
+        }
+        .details tr:first-child th:first-child {
+            border-top-left-radius: 8px; /* Top-left rounded corner */
+        }
+        .details tr:first-child th:last-child {
+            border-top-right-radius: 8px; /* Top-right rounded corner */
+        }
+        .details tr:last-child td:first-child {
+            border-bottom-left-radius: 8px; /* Bottom-left rounded corner */
+        }
+        .details tr:last-child td:last-child {
+            border-bottom-right-radius: 8px; /* Bottom-right rounded corner */
+        }
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .payments {
+            width: 58%;
+        }
+        .summary {
+            width: 40%;
+            margin-left: auto;
+            align-self: flex-start;
+        }
+        .summary table {
+            width: 100%;
+        }
+        .summary td {
+            padding: 5px;
+            text-align: right;
+        }
+        .signature {
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="Logo">
+            <h2>WellSpine Healthcare</h2>
+            <p class="header-info">24 Jadavpur Central Road, KUPWARA, KOLKATA, 700015, West Bengal</p>
+            <p class="header-info">Contact No: 8017410038</p>
+        </div>
+        <div class="title">
+            <h3>Tax Invoice cum Money Receipt</h3>
+        </div>
+        <div class="body">
+            <div class="details">
+                <table>
+                    <tr>
+                        <th>Patient Name:</th>
+                        <td>SUKANYA SAHU</td>
+                        <th>Invoice Number:</th>
+                        <td>HCP-I120000030</td>
+                    </tr>
+                    <tr>
+                        <th>Address:</th>
+                        <td>GARIA, KOLKATA</td>
+                        <th>Date:</th>
+                        <td>13.12.2024 17:54</td>
+                    </tr>
+                    <tr>
+                        <th>Locality/City:</th>
+                        <td>KOLKATA</td>
+                        <th>Doctor's Name:</th>
+                        <td>Dr Sambhu Das Gupta</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="details">
+                <table>
+                    <tr>
+                        <th>Medical Service Performed</th>
+                        <th>Rate</th>
+                        <th>Unit</th>
+                        <th>Discount</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr>
+                        <td>X-ray</td>
+                        <td>₹500</td>
+                        <td>1</td>
+                        <td>0.00</td>
+                        <td>₹500</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="flex-container">
+                <div class="payments">
+                    <table>
+                        <tr>
+                            <th>Payments</th>
+                            <th>Receipt No</th>
+                            <th>Mode</th>
+                            <th>Amount</th>
+                        </tr>
+                        <tr>
+                            <td>29.12.2024 23:59</td>
+                            <td>HCP-R2425000182</td>
+                            <td>Card</td>
+                            <td>₹500.00</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="summary">
+                    <table>
+                        <tr>
+                            <td>Discount:</td>
+                            <td>₹0.00</td>
+                        </tr>
+                        <tr>
+                            <td>Total:</td>
+                            <td>₹500.00</td>
+                        </tr>
+                        <tr>
+                            <td>GST (20%):</td>
+                            <td>₹100.00</td>
+                        </tr>
+                        <tr>
+                            <td>Payable Amount:</td>
+                            <td>₹600.00</td>
+                        </tr>
+                        <tr>
+                            <td>Total Paid:</td>
+                            <td>₹500.00</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <div class="signature">
+                <p>Authorised Signature</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

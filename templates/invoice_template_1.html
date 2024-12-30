@@ -59,39 +59,59 @@ body {
 .info div {
   width: 48%;
 }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-th {
-  /* background-color: #DBEAFE; */
-  background-color: #f0f0f0;
-}
-
-.totals {
-  width: 50%;
-  margin-left: auto;
-  border-collapse: collapse;
-}
-
-.totals td {
-  padding: 8px;
-  text-align: right;
-}
-
+        
+.details, .payments {
+            margin-bottom: 20px;
+        }
+        .details table, .payments table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px; /* Rounded corners for the table */
+            overflow: hidden; /* Ensure rounded corners are applied */
+            background: #fff;
+            border: 1px solid #ddd; /* Outer border for the table */
+        }
+        .details th, .payments th {
+            background: #e0e0e0;
+            padding: 10px;
+            text-align: left;
+        }
+        .details td, .payments td {
+            padding: 10px;
+        }
+        /* Row borders: Add only horizontal lines */
+        .details tr:not(:last-child) td,
+        .payments tr:not(:last-child) td {
+            border-bottom: 1px solid #ddd; /* Horizontal line for rows */
+        }
+        /* Remove vertical borders between cells */
+        .details td, .payments td, 
+        .details th, .payments th {
+            border-left: none;
+            border-right: none;
+        }
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .payments {
+            width: 73%; /* Adjust width for better alignment */
+        }
+        .summary {
+            width: 25%;
+        }
+        .summary table {
+            width: 100%;
+        }
+        .summary td {
+            padding: 5px;
+        }
 .footer {
   text-align: right;
   font-style: italic;
+  margin-top: 20px;
 }
 </style>
 </head>
@@ -100,8 +120,9 @@ th {
   <div class="header">
     <img src="{{ logo }}" alt="Logo">
     <div class="header-info">
-      <p>{{ address }}</p>
-      <p>Contact No: {{ contact }}</p>
+      <h3>{{ name }}</h3>
+      <p>{{ full_address }}</p>
+      <p>Contact No: {{ phonenumber_1 }}</p>
     </div>
   </div>
   <div class="title">
@@ -110,54 +131,79 @@ th {
   <div class="body">
     <div class="info">
       <div>
-        <strong>Patient Name:</strong> {{ patient_name }}<br>
-        <strong>Address:</strong> {{ patient_address }}<br>
-        <strong>Locality/City:</strong> {{ patient_city }}
+        <strong>Patient Name :</strong> {{ patient_name }}<br><br>
+        <strong>Age :</strong> {{ age }}<br><br>
+        <strong>Mobile No :</strong> {{ patient_phone }}<br><br>
+        <strong>Address :</strong> {{ patient_address }}<br><br><br>
       </div>
       <div>
-        <strong>Invoice Number:</strong> {{ invoice_number }}<br>
-        <strong>Date:</strong> {{ date }}<br>
-        <strong>Doctor's Name:</strong> {{ doctor_name }}
+        <strong>Invoice Number :</strong> {{ invoice_number }}<br><br>
+        <strong>Date :</strong> {{ invoice_create_datetime }}<br><br>
+        <strong>Doctor's Name :</strong> {{ doctors_name }}<br><br>
+        <strong>UHID :</strong> {{ cp_id }}<br><br><br>
       </div>
     </div>    
-      <!-- Medical Service Details Table -->
-      <div>
+    <!-- Medical Service Details Table -->
+    <div class="details">
+      <table>
+        <!-- Table Header -->
+        <thead>
+          <tr>
+            <th>Medical Service Performed</th>
+            <th>Rate</th>
+            <th>Unit</th>
+            <th>Discount</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <!-- Table Body -->
+        <tbody>
+          {{#each services}}
+          <tr>
+            <td>{{this.fee_name}}</td>
+            <td>₹{{this.fee_amount}}</td>
+            <td>{{this.unit}}</td>
+            <td>₹{{this.discount_amount}}</td>
+            <td>₹{{this.fee_total}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <!-- Payment Details Table -->
+    <div class="flex-container">
+      <div class="payments">
         <table>
           <!-- Table Header -->
           <thead>
             <tr>
-              <th>Medical Service Performed</th>
-              <th>Rate</th>
-              <th>Unit</th>
+              <th>Payments</th>
+              <th>Receipt No</th>
+              <th>Mode</th>
               <th>Amount</th>
-              <th>Discount</th>
-              <th>Total</th>
-              <th>Total Paid</th>
-              <th>Payment Mode</th>
             </tr>
           </thead>
           <!-- Table Body -->
           <tbody>
-            {{#each services}}
+            {{#each payments}}
             <tr>
-              <td>{{this.service}}</td>
-              <td>{{this.rate}}</td>
-              <td>{{this.unit}}</td>
-              <td>{{this.amount}}</td>
-              <td>{{this.discount}}</td>
-              <td>{{this.total}}</td>
-              <td>{{this.total_paid}}</td>
-              <td>{{this.payment_mode}}</td>
+              <td>{{this.payment_datetime }}</td>
+              <td>{{this.receipt_no}}</td>
+              <td>{{this.payment_method}}</td>
+              <td>₹{{this.paid_amount}}</td>
             </tr>
             {{/each}}
           </tbody>
         </table>
       </div>
-    <!-- <table class="totals">
-      <tr><td><strong>Discount:</strong></td><td>{{ discount }}</td></tr>
-      <tr><td><strong>Total:</strong></td><td>{{ total }}</td></tr>
-      <tr><td><strong>({{ payment_mode }}) </strong><strong>Total Paid:</strong></td><td>{{ total_paid }}</td></tr>
-    </table> -->
+      <table class="summary">
+        <tr><td><strong>Discount :</strong></td><td>₹{{ discount_amount }}</td></tr>
+        <tr><td><strong>Total :</strong></td><td>₹{{ total_amount }}</td></tr>
+        <tr><td><strong>GST ({{ gst_percent }}):</strong></td><td>₹{{ gst_amount }}</td></tr>
+        <tr><td><strong>Payable Amount :</strong></td><td>₹{{ payable_amount }}</td></tr>
+        <tr><td><strong>Total Paid :</strong></td><td>₹{{ paid_amount }}</td></tr>
+      </table>
+    </div>
   </div>
   <div class="footer">
     <p><strong>Authorised Signature</strong></p>
