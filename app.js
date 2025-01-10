@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
 const { config } = require('./utils/config')
 const mailSenderRoutes = require('./routes/mail_sender_routes')
+const NODE_ENV = process.env.NODE_ENV || "development";
+const PORT = config[NODE_ENV].port
 
 
 // Instantiate Express.JS
@@ -29,8 +32,8 @@ app.use('/', mailSenderRoutes); // Mount the router
 
 
 // Start the server
-app.listen(config.port, () => {
-    console.log(`Server running on http://0.0.0.0:${config.port}`);
+app.listen(PORT, () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
 
 

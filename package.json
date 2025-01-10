@@ -10,11 +10,12 @@
   "dependencies": {
     "axios": "^1.6.8",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
     "express": "^4.19.2",
     "express-validator": "^7.2.0",
+    "handlebars": "^4.7.8",
     "nodemailer": "^6.9.13",
-    "puppeteer-core": "^22.7.1",
-    "handlebars": "^4.7.8"
+    "puppeteer-core": "^22.7.1"
   },
   "devDependencies": {
     "puppeteer": "^22.7.1"

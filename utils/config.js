@@ -1,8 +1,6 @@
 // Configuration object with all app settings
+require
 const config = {
-    // Server Configuration
-    port: 3000,
-    environment: 'development',
     
     // Mail Configuration 
     mailConfig: {
@@ -16,18 +14,32 @@ const config = {
         }
     },
     emailFrom: "clinic@healthconnectpro.in",
-    
-    // url configs
-    commonApiBaseUrl: "https://testemr-api-php.cb-dev.in/api/commonapi",
-    cliniApiBaseUrl: "https://testemr-api-php.cb-dev.in/api/clinicapi",
-
     // extra configs
     templateFileDir: "templates",
     invoiceTemplateFileName: "invoice_template_1.html",
     prescriptionTemplateFileName: "prescription_template_1.html",
     fileDir: "uploads",
     invoiceFileName: "invoice.pdf",
-    prescriptionFileName: "prescription.pdf"
+    prescriptionFileName: "prescription.pdf",
+    
+    // env dependant configs 
+    development: {
+        // Server Configuration
+        port: 3000,
+        
+        // url configs
+        commonApiBaseUrl: "https://testemr-api-php.cb-dev.in/api/commonapi",
+        cliniApiBaseUrl: "https://testemr-api-php.cb-dev.in/api/clinicapi",
+    },
+    production: {
+        // Server Configuration
+        port: 3000,
+        
+        // url configs
+        commonApiBaseUrl: "https://emr-api.healthconnectpro.in/api/commonapi",
+        cliniApiBaseUrl: "https://emr-api.healthconnectpro.in/api/clinicapi",
+    }
+
 };
 
 module.exports = {

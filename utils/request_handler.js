@@ -5,6 +5,9 @@
 
 const axios = require('axios');
 const { config } = require('./config');
+const NODE_ENV = process.env.NODE_ENV || "development";
+const cliniApiBaseUrl = config[NODE_ENV].cliniApiBaseUrl;
+const commonApiBaseUrl = config[NODE_ENV].commonApiBaseUrl;
 
 
 /**
@@ -38,7 +41,7 @@ async function makeApiCall(url, errorMessage) {
  */
 async function get_details_by_invoiceNumber(invoiceNumber, user_role = "dc") {
     return makeApiCall(
-        `${config.cliniApiBaseUrl}/MoneyReceipt/get_details_by_invoiceNumber?invoiceNumber=${invoiceNumber}&user_role=${user_role}`,
+        `${cliniApiBaseUrl}/MoneyReceipt/get_details_by_invoiceNumber?invoiceNumber=${invoiceNumber}&user_role=${user_role}`,
         'Failed to fetch details'
     );
 }
@@ -53,7 +56,7 @@ async function get_details_by_invoiceNumber(invoiceNumber, user_role = "dc") {
  */
 async function get_clinic_logo(clientId, fileName) {
     return makeApiCall(
-        `${config.commonApiBaseUrl}/File_reader/read_file_content_clinic?clinicid=${clientId}&file=${fileName}`,
+        `${commonApiBaseUrl}/File_reader/read_file_content_clinic?clinicid=${clientId}&file=${fileName}`,
         'Failed to fetch clinic logo'
     );
 }
@@ -68,7 +71,7 @@ async function get_clinic_logo(clientId, fileName) {
  */
 async function get_consultation_details_temp(id, pres_id, user_role = "dc") {
     return makeApiCall(
-        `${config.cliniApiBaseUrl}/PatientPrescription/get_consultation_details_temp?id=${id}&prescription_id=${pres_id}&user_role=${user_role}`,
+        `${cliniApiBaseUrl}/PatientPrescription/get_consultation_details_temp?id=${id}&prescription_id=${pres_id}&user_role=${user_role}`,
         'Failed to fetch consultation details'
     );
 }
@@ -82,7 +85,7 @@ async function get_consultation_details_temp(id, pres_id, user_role = "dc") {
  */
 async function get_doctor_details_temp(id, user_role = "dc") {
     return makeApiCall(
-        `${config.cliniApiBaseUrl}/PatientPrescription/get_doctor_details_temp?id=${id}&user_role=${user_role}`,
+        `${cliniApiBaseUrl}/PatientPrescription/get_doctor_details_temp?id=${id}&user_role=${user_role}`,
         'Failed to fetch doctor details'
     );
 }
@@ -98,7 +101,7 @@ async function get_doctor_details_temp(id, user_role = "dc") {
  */
 async function get_own_clinic_details_temp(doctor_id, clinic_id, user_role = "dc") {
     return makeApiCall(
-        `${config.cliniApiBaseUrl}/PatientPrescription/get_own_clinic_details_temp?doctorsid=${doctor_id}&clinicid=${clinic_id}&user_role=${user_role}`,
+        `${cliniApiBaseUrl}/PatientPrescription/get_own_clinic_details_temp?doctorsid=${doctor_id}&clinicid=${clinic_id}&user_role=${user_role}`,
         'Failed to fetch own clinic details'
     );
 }
