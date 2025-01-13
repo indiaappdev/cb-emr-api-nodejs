@@ -4,6 +4,7 @@ const { checkSchema } = require('express-validator');
  * Defines the validation schema for invoice data.
  * 
  * This schema validates the following fields:
+ * - env: Ensures it is a non-empty string.
  * - invoice_number: Ensures it is a non-empty string.
  * - emailTo: Validates it as a non-empty, valid email address, and normalizes it to lowercase.
  * - subject: Ensures it is a non-empty string.
@@ -12,6 +13,20 @@ const { checkSchema } = require('express-validator');
  * @returns {Object} Validation schema for invoice data.
  */
 exports.invoiceValidationSchema = checkSchema({
+    env: {
+        in: ['body'],
+        trim: true,
+        notEmpty: {
+            errorMessage: 'env is required'
+        },
+        isString: {
+            errorMessage: 'env must be a string'
+        },
+        isIn: {
+            options: [['test', 'live']], // Allow only "test" or "live"
+            errorMessage: 'env must be either "test" or "live"',
+        },
+    },
     invoice_number: {
         in: ['body'],
         trim: true,
@@ -66,6 +81,7 @@ exports.invoiceValidationSchema = checkSchema({
  * Defines the validation schema for sending a prescription.
  * 
  * This schema validates the following fields:
+ * - env: Ensures it is a non-empty string.
  * - cons_id: Ensures it is a non-empty string.
  * - pres_id: Ensures it is a non-empty string.
  * - user_role: Ensures it is a non-empty string.
@@ -77,6 +93,20 @@ exports.invoiceValidationSchema = checkSchema({
  * @returns {Object} Validation schema for sending a prescription.
  */
 exports.prescriptionValidationSchema = checkSchema({
+    env: {
+        in: ['body'],
+        trim: true,
+        notEmpty: {
+            errorMessage: 'env is required'
+        },
+        isString: {
+            errorMessage: 'env must be a string'
+        },
+        isIn: {
+            options: [['test', 'live']], // Allow only "test" or "live"
+            errorMessage: 'env must be either "test" or "live"',
+        },
+    },
     cons_id: {
         in: ['body'],
         trim: true,

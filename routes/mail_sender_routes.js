@@ -16,7 +16,7 @@ const { sendPrescription } = require('../controllers/prescription_controller');
 router.post('/sendInvoice', invoiceValidationSchema, validationMiddleware, async (req, res) => {
   try {
     startTime = Date.now()
-    const { invoice_number, emailTo, subject, body } = req.body;
+    const { env, invoice_number, emailTo, subject, body } = req.body;
 
     // Log request with sanitized data
     console.log('Processing invoice request:', {
@@ -26,7 +26,7 @@ router.post('/sendInvoice', invoiceValidationSchema, validationMiddleware, async
     });
 
     // Send invoice
-    const response = await sendInvoice(invoice_number, emailTo, subject, body);
+    const response = await sendInvoice(env, invoice_number, emailTo, subject, body);
 
     // Calculate request duration
     const duration = Date.now() - startTime;

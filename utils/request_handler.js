@@ -5,10 +5,6 @@
 
 const axios = require('axios');
 const { config } = require('./config');
-// env load
-const NODE_ENV = process.env.NODE_ENV || "test";
-const cliniApiBaseUrl = config[NODE_ENV].cliniApiBaseUrl;
-const commonApiBaseUrl = config[NODE_ENV].commonApiBaseUrl;
 
 
 /**
@@ -40,7 +36,8 @@ async function makeApiCall(url, errorMessage) {
  * @param {string} invoiceNumber - Invoice number to fetch all details
  * @returns {Promise<Object>} All details or empty object
  */
-async function get_details_by_invoiceNumber(invoiceNumber, user_role = "dc") {
+async function get_details_by_invoiceNumber(env, invoiceNumber, user_role = "dc") {
+    const cliniApiBaseUrl = config[env].cliniApiBaseUrl;
     return makeApiCall(
         `${cliniApiBaseUrl}/MoneyReceipt/get_details_by_invoiceNumber?invoiceNumber=${invoiceNumber}&user_role=${user_role}`,
         'Failed to fetch details'
@@ -55,7 +52,8 @@ async function get_details_by_invoiceNumber(invoiceNumber, user_role = "dc") {
  * @param {string} fileName - Logo file name
  * @returns {Promise<Object>} Logo data or empty object
  */
-async function get_clinic_logo(clientId, fileName) {
+async function get_clinic_logo(env, clientId, fileName) {
+    const commonApiBaseUrl = config[env].commonApiBaseUrl;
     return makeApiCall(
         `${commonApiBaseUrl}/File_reader/read_file_content_clinic?clinicid=${clientId}&file=${fileName}`,
         'Failed to fetch clinic logo'
@@ -70,7 +68,8 @@ async function get_clinic_logo(clientId, fileName) {
  * @param {string} user_role - User role for authentication, default is "dc"
  * @returns {Promise<Object>} Consultation details or empty object on failure
  */
-async function get_consultation_details_temp(id, pres_id, user_role = "dc") {
+async function get_consultation_details_temp(env, id, pres_id, user_role = "dc") {
+    const cliniApiBaseUrl = config[env].cliniApiBaseUrl;
     return makeApiCall(
         `${cliniApiBaseUrl}/PatientPrescription/get_consultation_details_temp?id=${id}&prescription_id=${pres_id}&user_role=${user_role}`,
         'Failed to fetch consultation details'
@@ -84,7 +83,8 @@ async function get_consultation_details_temp(id, pres_id, user_role = "dc") {
  * @param {string} user_role - User role for authentication, default is "dc"
  * @returns {Promise<Object>} Doctor details or empty object on failure
  */
-async function get_doctor_details_temp(id, user_role = "dc") {
+async function get_doctor_details_temp(env, id, user_role = "dc") {
+    const cliniApiBaseUrl = config[env].cliniApiBaseUrl;
     return makeApiCall(
         `${cliniApiBaseUrl}/PatientPrescription/get_doctor_details_temp?id=${id}&user_role=${user_role}`,
         'Failed to fetch doctor details'
@@ -100,7 +100,8 @@ async function get_doctor_details_temp(id, user_role = "dc") {
  * @param {string} user_role - User role for authentication, default is "dc"
  * @returns {Promise<Object>} Own clinic details or empty object on failure
  */
-async function get_own_clinic_details_temp(doctor_id, clinic_id, user_role = "dc") {
+async function get_own_clinic_details_temp(env, doctor_id, clinic_id, user_role = "dc") {
+    const cliniApiBaseUrl = config[env].cliniApiBaseUrl;
     return makeApiCall(
         `${cliniApiBaseUrl}/PatientPrescription/get_own_clinic_details_temp?doctorsid=${doctor_id}&clinicid=${clinic_id}&user_role=${user_role}`,
         'Failed to fetch own clinic details'

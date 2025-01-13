@@ -71,10 +71,10 @@ const data = {
  * @param {string} invoiceNumber - Invoice number
  * @returns {Promise<Object>} Composed data
  */
-async function composeData(invoiceNumber) {
+async function composeData(env, invoiceNumber) {
     let data = {};
     // First fetch details as logo depends on it
-    const details = await get_details_by_invoiceNumber(invoiceNumber);
+    const details = await get_details_by_invoiceNumber(env, invoiceNumber);
     if (details.status === 1) {
         const clinicDetails = details.data.clinicDetails
         const patientDetails = details.data.patientDetails
@@ -93,7 +93,7 @@ async function composeData(invoiceNumber) {
         // Fetch and process clinic logo if available
         if (clinicDetails?.logo) {
             const clientId = clinicDetails.clinic_id;
-            const clinicLogo = await get_clinic_logo(clientId, clinicDetails.logo);
+            const clinicLogo = await get_clinic_logo(env, clientId, clinicDetails.logo);
             data.logo = clinicLogo?.base64String || '';
         }
 
@@ -128,12 +128,12 @@ async function composeData(invoiceNumber) {
  * @param {string} body - Email body template
  * @returns {Promise<Object>} Email send response
  */
-const sendInvoice = async (invoice_number, emailTo, subject, body) => {
+const sendInvoice = async (env, invoice_number, emailTo, subject, body) => {
     let outputPath;
     try {
         // Get data and generate PDF concurrently
         const templateFilePath = path.join(__dirname, '..', config.templateFileDir, config.invoiceTemplateFileName);
-        const data = await composeData(invoice_number);
+        const data = await composeData(env, invoice_number);
         const invoiceDirPath = path.join(__dirname, '..', config.fileDir);
         if (!fs.existsSync(invoiceDirPath)) {
             fs.mkdirSync(invoiceDirPath, { recursive: true });

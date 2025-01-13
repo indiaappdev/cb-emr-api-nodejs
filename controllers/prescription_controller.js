@@ -21,13 +21,13 @@ const { get_consultation_details_temp, get_doctor_details_temp, get_own_clinic_d
  * @param {string} clinic_id - Unique identifier for the clinic.
  * @returns {Promise<Object>} Prepared prescription data or throws an error if any of the fetch operations fail.
  */
-const prepareData = async (id, pres_id, user_role = "dc", clinic_id) => {
+const prepareData = async (env, id, pres_id, user_role = "dc", clinic_id) => {
     // console.log("called prepareData");
     try {
         // Fetch independent data in parallel for better performance
         const [consultation_details, doc_details] = await Promise.all([
-            get_consultation_details_temp(id, pres_id, user_role),
-            get_doctor_details_temp(id, user_role),
+            get_consultation_details_temp(env, id, pres_id, user_role),
+            get_doctor_details_temp(env, id, user_role),
         ]);
         if ((consultation_details.status === 1) && (doc_details.status === 1)) {
             const data = consultation_details;
@@ -36,7 +36,7 @@ const prepareData = async (id, pres_id, user_role = "dc", clinic_id) => {
             data.response.degree = doc_details.response.degree;
             data.response.specialization = doc_details.response.specialization;
 
-            const clinic_data = await get_own_clinic_details_temp(doc_details.response.id, clinic_id, user_role)
+            const clinic_data = await get_own_clinic_details_temp(env, doc_details.response.id, clinic_id, user_role)
             if (clinic_data.status === 1) {
                 data.response.clinic_name = clinic_data.response.name;
 
@@ -47,7 +47,7 @@ const prepareData = async (id, pres_id, user_role = "dc", clinic_id) => {
 
                 // Fetch and process clinic logo if available
                 if (clinic_data?.response?.logo) {
-                    const clinicLogo = await get_clinic_logo(clinic_id, clinic_data.response.logo);
+                    const clinicLogo = await get_clinic_logo(env, clinic_id, clinic_data.response.logo);
                     data.response.clinicImg = clinicLogo?.base64String || '';
                 }
                 return data.response;
@@ -88,7 +88,9 @@ const prepareData = async (id, pres_id, user_role = "dc", clinic_id) => {
 const sendPrescription = async (requestBody) => {
     let outputPath;
     try {
-        const { cons_id,
+        const { 
+            env,
+            cons_id,
             pres_id,
             user_role,
             clinic_id,
@@ -97,7 +99,7 @@ const sendPrescription = async (requestBody) => {
             body } = requestBody;
         // Get data and generate PDF concurrently
         const templateFilePath = path.join(__dirname, '..', config.templateFileDir, config.prescriptionTemplateFileName);
-        const data = await prepareData(cons_id, pres_id, user_role, clinic_id);
+        const data = await prepareData(env, cons_id, pres_id, user_role, clinic_id);
         const prescriptionDirPath = path.join(__dirname, '..', config.fileDir);
         if (!fs.existsSync(prescriptionDirPath)) {
             fs.mkdirSync(prescriptionDirPath, { recursive: true });

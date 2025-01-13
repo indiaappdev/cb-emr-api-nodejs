@@ -2,6 +2,8 @@
 require
 const config = {
     
+    // Server Configuration
+    port: 3000,
     // Mail Configuration 
     mailConfig: {
         // host: 'pinnacle.herosite.pro', // SMTP Host
@@ -24,18 +26,11 @@ const config = {
     
     // env dependant configs 
     test: {
-        // Server Configuration
-        port: 3000,
-
         // url configs
         commonApiBaseUrl: "https://testemr-api-php.cb-dev.in/api/commonapi",
         cliniApiBaseUrl: "https://testemr-api-php.cb-dev.in/api/clinicapi",
     },
     live: {
-        // Server Configuration
-        port: 3000,
-        
-        // url configs
         commonApiBaseUrl: "https://emr-api.healthconnectpro.in/api/commonapi",
         cliniApiBaseUrl: "https://emr-api.healthconnectpro.in/api/clinicapi",
     }
