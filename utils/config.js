@@ -23,15 +23,15 @@ const config = {
     prescriptionFileName: "prescription.pdf",
     
     // env dependant configs 
-    development: {
+    test: {
         // Server Configuration
         port: 3000,
-        
+
         // url configs
         commonApiBaseUrl: "https://testemr-api-php.cb-dev.in/api/commonapi",
         cliniApiBaseUrl: "https://testemr-api-php.cb-dev.in/api/clinicapi",
     },
-    production: {
+    live: {
         // Server Configuration
         port: 3000,
         

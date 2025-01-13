@@ -3,7 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const { config } = require('./utils/config')
 const mailSenderRoutes = require('./routes/mail_sender_routes')
-const NODE_ENV = process.env.NODE_ENV || "development";
+const NODE_ENV = process.env.NODE_ENV || "test";
 const PORT = config[NODE_ENV].port
 
 
