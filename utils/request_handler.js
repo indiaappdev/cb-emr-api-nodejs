@@ -5,6 +5,7 @@
 
 const axios = require('axios');
 const { config } = require('./config');
+// env load
 const NODE_ENV = process.env.NODE_ENV || "test";
 const cliniApiBaseUrl = config[NODE_ENV].cliniApiBaseUrl;
 const commonApiBaseUrl = config[NODE_ENV].commonApiBaseUrl;
