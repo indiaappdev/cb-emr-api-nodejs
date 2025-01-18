@@ -14,8 +14,8 @@ const { sendPrescription } = require('../controllers/prescription_controller');
  * invoice PDF, and sends it as an email attachment.
  */
 router.post('/sendInvoice', invoiceValidationSchema, validationMiddleware, async (req, res) => {
+  startTime = Date.now()
   try {
-    startTime = Date.now()
     const { env, invoice_number, emailTo, subject, body } = req.body;
 
     // Log request with sanitized data
@@ -26,18 +26,19 @@ router.post('/sendInvoice', invoiceValidationSchema, validationMiddleware, async
     });
 
     // Send invoice
-    const response = await sendInvoice(env, invoice_number, emailTo, subject, body);
+    const {mailResponse, processingTimes} = await sendInvoice(env, invoice_number, emailTo, subject, body);
 
     // Calculate request duration
     const duration = Date.now() - startTime;
-
+    console.log("Processing times:: ",processingTimes)
     // Success response
     return res.status(200).json({
       status: 1,
       message: `Email sent successfully to ${emailTo}`,
-      response,
+      resp: mailResponse,
       metadata: {
-        requestDuration: `${duration}ms`,
+        ...processingTimes,
+        totalTime: `${duration/1000} s`,
         timestamp: new Date().toISOString()
       }
     });
@@ -52,6 +53,7 @@ router.post('/sendInvoice', invoiceValidationSchema, validationMiddleware, async
 
     // Determine appropriate error status
     const statusCode = error.code === 'INVALID_EMAIL' ? 400 : 500;
+    duration = Date.now() - startTime;
 
     return res.status(statusCode).json({
       status: 0,
@@ -60,7 +62,10 @@ router.post('/sendInvoice', invoiceValidationSchema, validationMiddleware, async
         message: error.message,
         code: error.code || 'UNKNOWN_ERROR'
       },
-      timestamp: new Date().toISOString()
+      metadata: {
+        totalTime: `${duration/1000} s`,
+        timestamp: new Date().toISOString()
+      }
     });
   }
 });
@@ -81,8 +86,8 @@ router.post('/sendInvoice', invoiceValidationSchema, validationMiddleware, async
  * If the request fails, it responds with an appropriate error status and message.
  */
 router.post("/sendPrescription", prescriptionValidationSchema, validationMiddleware, async (req, res) => {
+  startTime = Date.now()
   try {
-    startTime = Date.now()
     const requestBody = req.body;
 
     // Log request with sanitized data
@@ -93,18 +98,20 @@ router.post("/sendPrescription", prescriptionValidationSchema, validationMiddlew
     });
 
     // Send prescription
-    const response = await sendPrescription(requestBody)
+    const {mailResponse, processingTimes} = await sendPrescription(requestBody)
 
     // Calculate request duration
-    const duration = Date.now() - startTime;
+    duration = Date.now() - startTime;
 
+    console.log("Processing times:: ",processingTimes)
     // Success response
     return res.status(200).json({
       status: 1,
       message: `Prescription Email sent successfully to ${requestBody.emailTo}`,
-      resp: response,
+      resp: mailResponse,
       metadata: {
-        requestDuration: `${duration}ms`,
+        ...processingTimes,
+        totalTime: `${duration/1000} s`,
         timestamp: new Date().toISOString()
       }
     });
@@ -118,6 +125,7 @@ router.post("/sendPrescription", prescriptionValidationSchema, validationMiddlew
 
     // Determine appropriate error status
     const statusCode = error.code === 'INVALID_EMAIL' ? 400 : 500;
+    duration = Date.now() - startTime;
 
     return res.status(statusCode).json({
       status: 0,
@@ -126,7 +134,10 @@ router.post("/sendPrescription", prescriptionValidationSchema, validationMiddlew
         message: error.message,
         code: error.code || 'UNKNOWN_ERROR'
       },
-      timestamp: new Date().toISOString()
+      metadata: {
+        totalTime: `${duration/1000} s`,
+        timestamp: new Date().toISOString()
+      }
     });
   }
 })

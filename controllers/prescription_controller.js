@@ -99,7 +99,11 @@ const sendPrescription = async (requestBody) => {
             body } = requestBody;
         // Get data and generate PDF concurrently
         const templateFilePath = path.join(__dirname, '..', config.templateFileDir, config.prescriptionTemplateFileName);
+
+        dataPrepStartTime = Date.now()
         const data = await prepareData(env, cons_id, pres_id, user_role, clinic_id);
+        dataPrepDuration = Date.now() - dataPrepStartTime
+
         const prescriptionDirPath = path.join(__dirname, '..', config.fileDir);
         if (!fs.existsSync(prescriptionDirPath)) {
             fs.mkdirSync(prescriptionDirPath, { recursive: true });
@@ -107,8 +111,12 @@ const sendPrescription = async (requestBody) => {
         outputPath = path.join(prescriptionDirPath, config.prescriptionFileName);
         // Parse the `medicine` field
         data.medicine = JSON.parse(data.medicine);
-        await generatePDF(templateFilePath, data, outputPath);
 
+        pdfGenStartTime = Date.now()
+        await generatePDF(templateFilePath, data, outputPath);
+        pdfGenDuration = Date.now() - pdfGenStartTime
+
+        mailSendingStartTime = Date.now()
         const mailOptions = {
             from: config.emailFrom,
             to: emailTo,
@@ -119,8 +127,15 @@ const sendPrescription = async (requestBody) => {
                 content: fs.readFileSync(outputPath)
             }]
         };
+        mailResponse = await sendMail(mailOptions);
+        mailSendingDuration = Date.now() - mailSendingStartTime
 
-        return await sendMail(mailOptions);
+        processingTimes = {
+            dataCollectionTime: `${dataPrepDuration/1000} s`,
+            pdfGenerationTime: `${pdfGenDuration/1000} s`,
+            mailSendingTime: `${mailSendingDuration/1000} s`
+        }
+        return {mailResponse, processingTimes};
     } catch (error) {
         // Log the error, assuming logger is set up for error reporting
         console.log("sendPrescription:: error - " + error.stack);

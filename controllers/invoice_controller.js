@@ -133,16 +133,23 @@ const sendInvoice = async (env, invoice_number, emailTo, subject, body) => {
     try {
         // Get data and generate PDF concurrently
         const templateFilePath = path.join(__dirname, '..', config.templateFileDir, config.invoiceTemplateFileName);
+
+        dataPrepStartTime = Date.now()
         const data = await composeData(env, invoice_number);
+        dataPrepDuration = Date.now() - dataPrepStartTime
+
         const invoiceDirPath = path.join(__dirname, '..', config.fileDir);
         if (!fs.existsSync(invoiceDirPath)) {
             fs.mkdirSync(invoiceDirPath, { recursive: true });
         }
         outputPath = path.join(invoiceDirPath, config.invoiceFileName);
+
+        pdfGenStartTime = Date.now()
         await generatePDF(templateFilePath, {
             invoice_number,
             ...data
         }, outputPath);
+        pdfGenDuration = Date.now() - pdfGenStartTime
 
         // Process email content concurrently
         const [mergedSubject, mergedBody] = await Promise.all([
@@ -150,6 +157,7 @@ const sendInvoice = async (env, invoice_number, emailTo, subject, body) => {
             mergeVariables(body, data)
         ]);
 
+        mailSendingStartTime = Date.now()
         const mailOptions = {
             from: config.emailFrom,
             to: emailTo,
@@ -160,8 +168,15 @@ const sendInvoice = async (env, invoice_number, emailTo, subject, body) => {
                 content: fs.readFileSync(outputPath)
             }]
         };
+        mailResponse = await sendMail(mailOptions)
+        mailSendingDuration = Date.now() - mailSendingStartTime
 
-        return await sendMail(mailOptions);
+        processingTimes = {
+            dataCollectionTime: `${dataPrepDuration/1000} s`,
+            pdfGenerationTime: `${pdfGenDuration/1000} s`,
+            mailSendingTime: `${mailSendingDuration/1000} s`
+        }
+        return {mailResponse, processingTimes};
     } catch (error) {
         console.error("Invoice sending failed:", error.stack);
         throw error;
