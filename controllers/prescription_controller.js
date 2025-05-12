@@ -31,23 +31,23 @@ const prepareData = async (env, id, pres_id, user_role = "dc", clinic_id) => {
         ]);
         if ((consultation_details.status === 1) && (doc_details.status === 1)) {
             const data = consultation_details;
-            data.response.doctors_name = doc_details.response.doctors_name;
-            data.response.licence_number = doc_details.response.licence_number;
-            data.response.degree = doc_details.response.degree;
-            data.response.specialization = doc_details.response.specialization;
+            data.response.doctors_name = doc_details.data.doctors_name;
+            data.response.licence_number = doc_details.data.licence_number;
+            data.response.degree = doc_details.data.degree;
+            data.response.specialization = doc_details.data.specialization;
 
-            const clinic_data = await get_own_clinic_details_temp(env, doc_details.response.id, clinic_id, user_role)
+            const clinic_data = await get_own_clinic_details_temp(env, doc_details.data.id, clinic_id, user_role)
             if (clinic_data.status === 1) {
-                data.response.clinic_name = clinic_data.response.name;
+                data.response.clinic_name = clinic_data.data.name;
 
-                data.response.address_line_1 = clinic_data.response.address_line_1;
-                data.response.phonenumber_1 = clinic_data.response.phonenumber_1;
-                data.response.phonenumber_2 = clinic_data.response.phonenumber_2;
-                data.response.timings = clinic_data.response.timings;
+                data.response.address_line_1 = clinic_data.data.address_line_1;
+                data.response.phonenumber_1 = clinic_data.data.phonenumber_1;
+                data.response.phonenumber_2 = clinic_data.data.phonenumber_2;
+                data.response.timings = clinic_data.data.timings;
 
                 // Fetch and process clinic logo if available
                 if (clinic_data?.response?.logo) {
-                    const clinicLogo = await get_clinic_logo(env, clinic_id, clinic_data.response.logo);
+                    const clinicLogo = await get_clinic_logo(env, clinic_id, clinic_data.data.logo);
                     data.response.clinicImg = clinicLogo?.base64String || '';
                 }
                 return data.response;
