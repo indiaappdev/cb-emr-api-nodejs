@@ -92,6 +92,7 @@ router.post("/sendPrescription", prescriptionValidationSchema, validationMiddlew
 
     // Log request with sanitized data
     console.log('Processing Prescription request:', {
+      cons_id: requestBody.cons_id,
       pres_id: requestBody.pres_id,
       emailTo: requestBody.emailTo.replace(/(?<=.{3}).(?=.*@)/g, '*'), // Mask email
       timestamp: new Date().toISOString()

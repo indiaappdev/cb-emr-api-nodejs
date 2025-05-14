@@ -113,7 +113,10 @@ const sendPrescription = async (requestBody) => {
         outputPath = path.join(prescriptionDirPath, config.prescriptionFileName);
         // Parse the `medicine` field
         console.log("In  sendPrescription  medicine= "+data.medicine);
-        data.medicine = JSON.parse(data.medicine);
+        if(data.medicine != "")
+            data.medicine = JSON.parse(data.medicine);
+        
+        console.log("In  sendPrescription  medicine= "+data.medicine);
 
         pdfGenStartTime = Date.now()
         await generatePDF(templateFilePath, data, outputPath);
