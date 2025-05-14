@@ -31,10 +31,10 @@ const prepareData = async (env, id, pres_id, user_role = "dc", clinic_id) => {
         ]);
         if ((consultation_details.status === 1) && (doc_details.status === 1)) {
             const data = consultation_details;
-            data.response.doctors_name = doc_details.data.doctors_name;
-            data.response.licence_number = doc_details.data.licence_number;
-            data.response.degree = doc_details.data.degree;
-            data.response.specialization = doc_details.data.specialization;
+            data.data.doctors_name = doc_details.data.doctors_name;
+            data.data.licence_number = doc_details.data.licence_number;
+            data.data.degree = doc_details.data.degree;
+            data.data.specialization = doc_details.data.specialization;
 
             const clinic_data = await get_own_clinic_details_temp(env, doc_details.data.id, clinic_id, user_role)
             if (clinic_data.status === 1) {
