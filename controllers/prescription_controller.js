@@ -50,14 +50,16 @@ const prepareData = async (env, id, pres_id, user_role = "dc", clinic_id) => {
                     const clinicLogo = await get_clinic_logo(env, clinic_id, clinic_data.data.logo);
                     consultation_details.data.clinicImg = clinicLogo?.base64String || '';
                 }
+                console.log("returing prepareData "+consultation_details.data);
                 return consultation_details.data;
             } else {
                 throw new Error(`Clinic details fetch Error: ${clinic_data.status} - ${clinic_data.message}`);
             }
         } else {
-            if (consultation_details.status === 1) {
+            if (consultation_details.status === 0) {
                 throw new Error(`Consultation details fetch Error: ${consultation_details.status} - ${consultation_details.message}`);
-            } else {
+            }
+            if (doc_details.status === 0) {
                 throw new Error(`Doctor details fetch Error: ${doc_details.status} - ${doc_details.message}`);
             }
         }
@@ -110,6 +112,7 @@ const sendPrescription = async (requestBody) => {
         }
         outputPath = path.join(prescriptionDirPath, config.prescriptionFileName);
         // Parse the `medicine` field
+        console.log("In  sendPrescription  medicine= "+data.medicine);
         data.medicine = JSON.parse(data.medicine);
 
         pdfGenStartTime = Date.now()
